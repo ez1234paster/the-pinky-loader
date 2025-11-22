@@ -1,11 +1,13 @@
 require('dotenv').config();
-const fs = require('fs');
+const fs = require('node:fs');
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { Client, GatewayIntentBits } = require('discord.js');
 
 const app = express();
 app.use(express.json());
+
+const secrets=require("./secrets.json")
 
 // ---------------- Datastore ----------------
 const BAN_FILE = 'bans.json';
@@ -70,12 +72,12 @@ app.get('/list-bans', (req, res) => res.json(loadBans()));
 app.get('/list-sessions', (req, res) => res.json(sessions));
 
 // Start Express server
-const PORT = process.env.PORT || 5000;
+const PORT =  secrets.port;
 app.listen(PORT, () => console.log(`API running on port ${PORT}`));
 
 // ---------------- Discord Bot ----------------
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
-const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
+const BOT_TOKEN = secrets.bot_token;
 
 client.once('ready', () => console.log(`Logged in as ${client.user.tag}`));
 
